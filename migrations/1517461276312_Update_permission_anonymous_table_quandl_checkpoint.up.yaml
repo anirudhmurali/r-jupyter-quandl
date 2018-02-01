@@ -1,0 +1,14 @@
+- args:
+    role: anonymous
+    table: quandl_checkpoint
+  type: drop_select_permission
+- args:
+    permission:
+      columns:
+      - vendor_code
+      - datatable_code
+      - next_offset
+      filter: {}
+    role: anonymous
+    table: quandl_checkpoint
+  type: create_select_permission

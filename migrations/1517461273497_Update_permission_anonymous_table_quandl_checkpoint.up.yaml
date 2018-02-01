@@ -1,0 +1,7 @@
+- args:
+    permission:
+      columns: []
+      filter: {}
+    role: anonymous
+    table: quandl_checkpoint
+  type: create_select_permission

@@ -37,13 +37,13 @@ function getValidColumnName(columnName) {
 
 
 function quandlToHasuraConverter(response) {
-    const rows = response.datatable.data;
-    const columns = response.datatable.columns;
+    const rows = response.dataset.data;
+    const columns = response.dataset.column_names;
     var insertArray = [];
     rows.every(function(row, index) {
         var insertObj = {};
         row.forEach(function(columnValue, index, columnArray) {
-            insertObj[getValidColumnName(columns[index].name)] = columnValue;
+            insertObj[getValidColumnName(columns[index].toLowerCase())] = columnValue;
         });
         insertArray.push(insertObj);
         return true;
@@ -57,15 +57,9 @@ function getTableName(vendorCode, datatableCode) {
 }
 
 function getPostgresqlTypeFromColumnType(columnType) {
-    switch (columnType.toLowerCase()) {
-        case 'string': return 'text';
-        case 'date': return 'date';
-        case 'double': return 'numeric';
-    }
-    if (columnType.toLowerCase().indexOf("bigdecimal") !== -1) {
-        return "decimal";
-    }
-    return null;
+
+    if(columnType.toLowerCase() == 'date') return 'date';
+    else return 'numeric';
 }
 
 

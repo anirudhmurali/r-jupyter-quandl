@@ -10,7 +10,7 @@ const hasura = {
 
 const quandl = {
     url: {
-        data: 'https://www.quandl.com/api/v3/datatables'
+        data: 'https://www.quandl.com/api/v3/datasets'
     }
 };
 
@@ -20,10 +20,8 @@ function getQuandlMetadataUrl(vendorCode, datatableCode) {
     return quandl.url.data + '/' + vendorCode + '/' + datatableCode + '/metadata.json?api_key=' + QUANDL_API_KEY;
 }
 
-function getQuandlDataUrl(vendorCode, datatableCode, nextOffset) {
-    if (nextOffset) {
-        return quandl.url.data + '/' + vendorCode + '/' + datatableCode + '.json?api_key=' + QUANDL_API_KEY + '&qopts.cursor_id=' + nextOffset;
-    }
+function getQuandlDataUrl(vendorCode, datatableCode) {
+    
     return quandl.url.data + '/' + vendorCode + '/' + datatableCode + '.json?api_key=' + QUANDL_API_KEY;
 }
 

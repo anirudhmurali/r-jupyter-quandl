@@ -1,0 +1,25 @@
+- args:
+    role: anonymous
+    table: wiki_prices
+  type: drop_select_permission
+- args:
+    permission:
+      columns:
+      - ticker
+      - date
+      - open
+      - high
+      - low
+      - close
+      - volume
+      - ex_dividend
+      - split_ratio
+      - adj_open
+      - adj_high
+      - adj_low
+      - adj_close
+      - adj_volume
+      filter: {}
+    role: anonymous
+    table: wiki_prices
+  type: create_select_permission

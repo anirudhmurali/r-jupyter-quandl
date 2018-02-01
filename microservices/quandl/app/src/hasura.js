@@ -25,11 +25,13 @@ function insertDataToTable(tableName, objects, callback) {
 
 function batchInsertDataIntoHasura(tableName, insertArray, callback) {
     console.log('Size of insertArray: ' + insertArray.length);
-    var batchArray = [];
+    var batchArray = []; 
+    var isLastTime = false;
     if (insertArray.length < 1000) {
         batchArray = insertArray;
+        isLastTime = true;
     } else {
-        batchArray = insertArray.splice(0, 1000);
+        batchArray = insertArray.splice(0, 1000);        
     }
 
     if (batchArray.length === 0) {
@@ -40,52 +42,9 @@ function batchInsertDataIntoHasura(tableName, insertArray, callback) {
         if (error) {
             callback(error, null);
         } else {
-            batchInsertDataIntoHasura(tableName, insertArray, callback);
+            batchInsertDataIntoHasura(tableName, isLastTime ? [] : insertArray, callback);
         }
     });
-}
-
-function updateTableCheckpointTable(vendorCode, datatableCode, offset, callback) {
-    const options = {
-        method: 'POST',
-        url: config.hasura.url.data,
-        headers: utils.adminHeaders,
-        body: JSON.stringify({
-            type: 'update',
-            args: {
-                table: 'quandl_checkpoint',
-                '$set': {
-                    'next_offset': offset
-                },
-                where: {
-                    vendor_code: vendorCode,
-                    datatable_code: datatableCode
-                }
-            }
-        })
-    };
-    customRequest(options, callback);
-}
-
-
-function getLatestOffsetForQuandl(vendorCode, datatableCode, callback) {
-    const options = {
-        method: 'POST',
-        url: config.hasura.url.data,
-        headers: utils.adminHeaders,
-        body: JSON.stringify({
-            type: 'select',
-            args: {
-                table: 'quandl_checkpoint',
-                columns: ['*'],
-                where: {
-                    vendor_code: vendorCode,
-                    datatable_code: datatableCode
-                }
-            }
-        })
-    };
-    customRequest(options, callback);
 }
 
 function createHasuraTable(tableName, columns, primaryKey, callback) {
@@ -97,19 +56,14 @@ function createHasuraTable(tableName, columns, primaryKey, callback) {
     }
     var sqlStatement = 'CREATE TABLE ' + tableName + '(';
     columns.forEach(function(column, index, array) {
-        sqlStatement += utils.getValidColumnName(column.name) + ' ' + utils.getPostgresqlTypeFromColumnType(column.type);
+        sqlStatement += utils.getValidColumnName(column) + ' ' + utils.getPostgresqlTypeFromColumnType(column);
         if (index !== array.length - 1 || (primaryKey && primaryKey.length > 0)) {
             sqlStatement += ', ';
         }
     });
-    if (primaryKey && primaryKey.length > 0) {
+    if (primaryKey) {
         sqlStatement += 'PRIMARY KEY(';
-        primaryKey.forEach(function(columnName, index, array) {
-            sqlStatement += columnName;
-            if (index !== array.length - 1) {
-                sqlStatement += ', ';
-            }
-        });
+        sqlStatement += primaryKey;   
         sqlStatement += ')';
     }
     sqlStatement += ');';
@@ -162,9 +116,7 @@ function trackTableInHasura(tableName, callback) {
 
 module.exports = {
     insertDataToTable,
-    getLatestOffsetForQuandl,
     trackTableInHasura,
     createHasuraTable,
-    updateTableCheckpointTable,
     batchInsertDataIntoHasura
 };

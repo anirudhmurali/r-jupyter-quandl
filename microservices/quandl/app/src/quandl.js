@@ -8,7 +8,7 @@ const config = require('./config');
  */
 function fetchData(requestUrl, responseToInsertArrayConverter, callback) {
     console.log('Fetching quandly data: CURSORID' + requestUrl);
-    var nextCursorId = null;
+
     customRequest(requestUrl, function(error, response) {
         if (error) {
             console.log('Fetching data from quandl failed');
@@ -16,13 +16,11 @@ function fetchData(requestUrl, responseToInsertArrayConverter, callback) {
             callback(error, null, null);
         } else {
             console.log('Fetching data from quandl successful');
-            if (response.meta && response.meta.next_cursor_id) {
-                nextCursorId = response.meta.next_cursor_id;
-            }
-            callback(null, responseToInsertArrayConverter(response), nextCursorId);
+            callback(null, responseToInsertArrayConverter(response), null);
         }
     });
 }
+
 
 //Fetch metadata
 function fetchMetadata(metadataUrl, callback) {
