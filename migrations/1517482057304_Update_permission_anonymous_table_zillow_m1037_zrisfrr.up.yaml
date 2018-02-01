@@ -1,0 +1,9 @@
+- args:
+    permission:
+      columns:
+      - date
+      - value
+      filter: {}
+    role: anonymous
+    table: zillow_m1037_zrisfrr
+  type: create_select_permission
