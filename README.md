@@ -206,9 +206,4 @@ Each cell contains a description of its intent. In short, we load a ticker data 
 
 ![Jupyter 4](https://raw.githubusercontent.com/hasura/quandl-jupyter-risk-modeling/master/assets/jupyter_risk_2.png "Jupyter 4")
 
-And that's it! 
-
-
-
-
-
+And that's it!
